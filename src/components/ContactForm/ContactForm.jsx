@@ -1,19 +1,41 @@
-import { useDispatch } from 'react-redux';
-import { addContact } from 'components/redux/contactsSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { nanoid } from 'nanoid';
+import { Notify } from 'notiflix';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { INITIAL_VALUES, schema } from './Config';
-import { nanoid } from 'nanoid';
+import { selectContacts } from 'components/redux/contacts/contactsSlice';
+import { addContact } from 'components/redux/contacts/API';
 import css from './ContactForm.module.css';
 
-const ContactForm = () => {
+const ContactForm = ({ closeModal }) => {
   const inputNameId = nanoid();
   const inputNumberId = nanoid();
   const dispatch = useDispatch();
+  const contacts = useSelector(selectContacts);
+
+  const onAddContact = newContact => {
+    const includesContact = contacts.filter(
+      contact =>
+        contact.name.toLowerCase().trim() ===
+          newContact.name.toLowerCase().trim() ||
+        contact.number.trim() === newContact.number.trim()
+    ).length;
+
+    if (includesContact) {
+      return Notify.failure(`${newContact.name}: is already in contacts`);
+    } else {
+      dispatch(addContact(newContact));
+    }
+    Notify.success(
+      `${newContact.name} was successfully added to your contacts`
+    );
+  };
 
   const hendleSubmit = (values, { resetForm }) => {
-    dispatch(addContact(values));
+    onAddContact({ ...values });
 
     resetForm();
+    closeModal();
   };
 
   return (
@@ -56,7 +78,9 @@ const ContactForm = () => {
               component="p"
             />
           </label>
-          <button type="submit">Add contact</button>
+          <button className={css.addContact} type="submit">
+            Add contact
+          </button>
         </Form>
       </Formik>
     </>

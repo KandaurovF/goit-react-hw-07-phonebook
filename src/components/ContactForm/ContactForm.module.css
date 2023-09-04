@@ -45,3 +45,13 @@ span {
   color: red;
   font-size: 12px;
 }
+
+.addContact {
+  border-radius: 50px;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  background-color: #41bf13;
+  color: #fff;
+}

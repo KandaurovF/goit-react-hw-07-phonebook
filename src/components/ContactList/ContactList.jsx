@@ -1,7 +1,9 @@
-import { deleteContact, selectContacts } from 'components/redux/contactsSlice';
-import { selectFilter } from 'components/redux/filterSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import { selectContacts } from 'components/redux/contacts/contactsSlice';
+import { selectFilter } from 'components/redux/filterSlice';
+import { deleteContact } from 'components/redux/contacts/API';
 import css from './ContactList.module.css';
+import { Confirm } from 'notiflix';
 
 const ContactList = () => {
   const dispathc = useDispatch();
@@ -14,7 +16,19 @@ const ContactList = () => {
 
   const renderedContacts = contactsFilter === '' ? contacts : filteredContacts;
 
-  const handleDelete = id => dispathc(deleteContact(id));
+  const handleDelete = id =>
+    Confirm.show(
+      'This will delete the contact',
+      'Are you sure?',
+      'Yes',
+      'No',
+      () => {
+        dispathc(deleteContact(id));
+      },
+      () => {
+        return;
+      }
+    );
 
   return (
     <ul className={`${css.cardsList} list`}>
@@ -23,7 +37,11 @@ const ContactList = () => {
 
         return (
           <li className={css.card} key={id}>
-            <p>{`${name}: ${number}`}</p>
+            <div className={css.contactInfo}>
+              <p>{`${name}`}</p>
+              <p>{`${number}`}</p>
+            </div>
+
             <button onClick={() => handleDelete(id)}>Delete</button>
           </li>
         );

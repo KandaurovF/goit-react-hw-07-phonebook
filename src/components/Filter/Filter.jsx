@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { selectContacts } from 'components/redux/contactsSlice';
+import { selectContacts } from 'components/redux/contacts/contactsSlice';
 import { selectFilter, setFilter } from 'components/redux/filterSlice';
 // import PropTypes from 'prop-types';
 import { RiSearchLine } from 'react-icons/ri';
